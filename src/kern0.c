@@ -1,25 +1,12 @@
-#include "types.h"
-#define VGABUF ((volatile char *) 0xb8000)
+#include "decls.h"
+#include "multiboot.h"
 
-static void
-vga_write(const char *s, int8_t linea, uint8_t color) {
-    linea = linea % 24;
-    int row_offset = linea * 160;
-    volatile char* buf = VGABUF;
-    for(int i = 0; s[i] != '\0'; i++) {
-        buf[row_offset + 2 * i] = s[i];
-        buf[row_offset + 2 * i + 1] = color; 
-    }
 
+unsigned char __attribute__ ((aligned (4096))) kstack[8192];
+
+
+void kmain(const multiboot_info_t *mbi) {
+    vga_write("kern2 loading.............", 8, 0x70);
+
+    asm("hlt");
 }
-
-void comienzo(void) {
-
-    vga_write("despacito 2", 26, 47);
-
-    while (1)
-        asm("hlt");
-}
-
-#include <stdlib.h>
-

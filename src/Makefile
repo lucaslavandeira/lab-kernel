@@ -4,14 +4,17 @@ CFLAGS += -g -std=c99 -Wall -Wextra -Wpedantic
 QEMU := qemu-system-i386 -serial mon:stdio
 KERN := kern0
 BOOT := -kernel $(KERN)
+ASMS := $(wildcard *.S)  # wildcard *.S
+SRCS := $(wildcard *.c)  # wildcard *.c
+OBJS := $(ASMS:%.S=%.o) $(SRCS:%.c=%.o) 
 
-kern0: boot.o kern0.o
-	ld -m elf_i386 -Ttext 0x100000 --entry comienzo $^ -o $@
+kern0: boot.o $(OBJS)
+	ld -m elf_i386 -Ttext 0x100000 --entry kmain $^ -o $@
 	# Verificar imagen Multiboot v1.
 	grub-file --is-x86-multiboot $@
 
-%.o: %.S
-	$(CC) $(CFLAGS) -c $<
+%.o: $(ASMS) $(SRCS)
+	$(CC) $(CFLAGS) -c $^
 
 clean:
 	rm -f kern0 *.o core

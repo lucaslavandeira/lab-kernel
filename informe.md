@@ -21,7 +21,7 @@ GCC provee el _atributo_ `aligned` para especificar a cuantos bytes (no bits) se
 
 >¿A qué valor se está inicializando kstack? ¿Varía entre la versión C y la versión ASM? (Leer la documentación de as sobre la directiva .space.)
 
-Según la directiva `.space` de x86, `.space 8192` toma los próximos 8192 bytes y los inicializa a cero. Declarar el arreglo en C de la manera que lo hicimos no inicializa los contenidos, y deja basura el el stack. Esto es aceptable puesto que el stack se lee solo a través del stack pointer que siempre apunta a una dirección con el último valor escrito.
+Según la directiva `.space` de x86, `.space 8192` toma los próximos 8192 bytes y los inicializa a cero. Declarar el arreglo en C de la manera que lo hicimos no inicializa los contenidos, y deja basura en el stack. Esto es aceptable puesto que el stack se lee solo a través del stack pointer que siempre apunta a la dirección con el último valor escrito.
 
 >Explicar la diferencia entre las directivas .align y .p2align de as, y mostrar cómo alinear el stack del kernel a 4 KiB usando cada una de ellas.
 

@@ -12,10 +12,22 @@ multiboot:
 
 .globl _start
 _start:
+    // Paso 1: Configurar el stack antes de llamar a kmain.
     movl $0, %ebp
     movl kstack, %esp
     push %ebp
+
+    // Paso 2: pasar la información multiboot a kmain. Si el
+    // kernel no arrancó vía Multiboot, se debe pasar NULL.
+    //
+    // Usar una instrucción de comparación (TEST o CMP) para
+    // comparar con MULTIBOOT_BOOTLOADER_MAGIC, pero no usar
+    // un salto a continuación, sino una instrucción CMOVcc
+    // (copia condicional).
+    // ...
+
     // ; esto esta roto, despues del call no se inicia bien
+//    test 
     movl $0, %ebx
 
     call kmain

@@ -1,10 +1,29 @@
-#define MAGIC 0x1BADB002
-#define FLAGS 0
-#define CRC ( -(MAGIC + FLAGS) )
+// boot.S
+
+#include "multiboot.h"
+
+#define KSTACK_SIZE 8192
 
 .align 4
 multiboot:
-    .long MAGIC
-    .long FLAGS
-    .long CRC
+    .long MULTIBOOT_HEADER_MAGIC
+    .long 0
+    .long -(MULTIBOOT_HEADER_MAGIC)
 
+.globl _start
+_start:
+    movl $0, %ebp
+    movl kstack, %esp
+    push %ebp
+    ; esto esta roto, despues del call no se inicia bien
+    movl $0, %ebx
+
+    call kmain
+halt:
+    hlt
+    jmp halt
+
+.data
+.p2align 12
+kstack:
+    .space KSTACK_SIZE

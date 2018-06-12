@@ -15,7 +15,7 @@ _start:
     movl $0, %ebp
     movl kstack, %esp
     push %ebp
-    ; esto esta roto, despues del call no se inicia bien
+    // ; esto esta roto, despues del call no se inicia bien
     movl $0, %ebx
 
     call kmain

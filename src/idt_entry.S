@@ -59,6 +59,21 @@ divzero:
         pop %eax
         jmp ack_irq
 
+.globl keyboard_asm
+keyboard_asm:
+        // (1) Guardar registros.
+        push %eax
+        push %edx
+        push %ecx
+
+        call keyboard
+
+        // (4) Restaurar registros.
+        pop %ecx
+        pop %edx
+        pop %eax
+        jmp ack_irq
+
 .data
 breakpoint_msg:
         .asciz "Hello, breakpoint"

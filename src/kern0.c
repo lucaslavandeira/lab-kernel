@@ -35,7 +35,7 @@ void kmain(const multiboot_info_t *mbi) {
 
     asm("div %4"
     : "=a"(linea), "=c"(color)
-    : "0"(18), "1"(0xE0), "b"(0), "d"(0));
+    : "0"(18), "1"(0xE0), "b"(1), "d"(0));
 
     vga_write("Funciona vga_write2?", linea, color);
 

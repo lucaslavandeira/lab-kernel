@@ -58,7 +58,7 @@ void irq_init() {
     irq_remap();
 
     idt_install(T_TIMER, timer_asm);
-    idt_install(T_KEYBOARD, ack_irq);
+    idt_install(T_KEYBOARD, keyboard_asm);
     idt_install(T_DIVIDE, divzero);
 
     asm("sti");

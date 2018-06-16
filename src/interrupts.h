@@ -60,4 +60,6 @@ void idt_install(uint8_t n, void (*handler)(void));
 // idt_entry.S
 void breakpoint(void);
 
+void irq_init();
+
 #endif

@@ -82,3 +82,108 @@ N = 64, 8N = 512 bytes, a lo sumo el campo limit tendrá el valor 8N - 1, 511
 
 Las interrupciones son eventos programados a través de la IDT, son señales que el hardware es programado para enviar al programa en ejecución actual y frenarlo para manejarlas. Pueden y son manejadas por software. Las excepciones son similares pero tienen como única fuente a las condiciones de error que pueden lanzar las instrucciones, como por ejemplo una división por cero. No pueden ser lanzadas manualmente por software, aunque sí se puede decidir qué hacer frente a ellas (handler).
 
+### kern2-isr
+
+Valores del stack con el handler usando `iret`:
+Antes de la interrupción: 
+
+Disassembly:
+```
+   ...
+   0x001006d5 <+196>:	lea    0x14c(%esp),%eax
+   0x001006dc <+203>:	push   %eax
+   0x001006dd <+204>:	call   0x1004fd <vga_write>
+   0x001006e2 <+209>:	call   0x10007c <idt_init>
+=> 0x001006e7 <+214>:	int3   
+   0x001006e8 <+215>:	hlt    
+   ...
+```
+
+Valores de registros:
+```
+(gdb) print $esp
+$1 = (void *) 0x104d98
+(gdb) x/xw $esp
+0x104d98:	0x00104ee8
+(gdb) print $cs
+$2 = 8
+(gdb) print $eflags
+$3 = [ PF AF ]
+(gdb) print/x $eflags
+$4 = 0x16
+```
+
+Luego ejecuto la instrucctión de interrupt:
+```
+(gdb) stepi
+breakpoint () at idt_entry.S:4
+4	        test %eax, %eax
+1: x/i $pc
+=> 0x10002f <breakpoint+1>:	test   %eax,%eax
+(gdb) print $esp
+$5 = (void *) 0x104d8c
+```
+
+El stack avanzó 0x104d98 - 0x104d8c = 12 bytes, o 3 posiciones de 4 bytes (1 word).
+
+```
+(gdb) x/3wx $sp
+0x104d8c:	0x001006e8	0x00000008	0x00000016
+```
+Según la especificación de la arquitectura: 
+"b. The processor then saves the current state of the EFLAGS, CS, and EIP registers on the new stack"
+
+En efecto, podemos ver los valores 0x16 (flags), 0x8 (CS), y 0x001006e8 (la próxima instrucción a ejecutar luego del `int`).
+
+Paso siguiente ejecutamos el `test` de la función `breakpoint`:
+```
+(gdb) stepi
+5	        iret
+1: x/i $pc
+=> 0x100031 <breakpoint+3>:	iret   
+(gdb) print $eflags
+$15 = [ PF ]
+(gdb) print/x $eflags
+$16 = 0x6
+```
+
+Podemos apreciar como cambió el registro de flags luego del `test`. Luego, ejecutamos la instrucción de retorno:
+
+```
+(gdb) stepi
+kmain (mbi=0x9500) at kern0.c:32
+32	    asm("hlt");
+1: x/i $pc
+=> 0x1006e8 <kmain+215>:	hlt    
+(gdb) print $eflags
+$17 = [ PF AF ]
+(gdb) print/x $eflags
+$18 = 0x16
+(gdb) print $sp
+$19 = (void *) 0x104d98
+
+```
+
+Podemos comprobar que se volvió al estado anterior de la interrupción, levantando del stack los valores guardados de los flags.
+
+Ahora si usamos `ret` en vez de `reti` se puede ver que estos valores puestos en el stack por la interrupción no son levantados a la vuelta de la ejecución de `breakpoint`, es decir los flags no fueron reiniciados a sus valores anteriores, y de hecho siguen en el stack:
+
+```
+breakpoint () at idt_entry.S:4
+4	        test %eax, %eax
+(gdb) stepi
+breakpoint () at idt_entry.S:5
+5	        ret
+(gdb) stepi
+kmain (mbi=0x107000) at kern0.c:32
+32	    asm("hlt");
+(gdb) print $eflags
+$1 = [ PF ]
+(gdb) print/x $eflags
+$2 = 0x6
+(gdb) x/3wx $sp
+0x104d90:	0x00000008	0x00000016	0x00104ee8
+```
+
+`reti` es la instrucción "RETurn from Interrupt", y hace exactamente lo que podemos ver, levantar la instrucción de retorno del tope del stack, y también los valores de los registros $eflags, y $cs. `ret` es el return normal, y solo levanta la instrucción de retorno.
+

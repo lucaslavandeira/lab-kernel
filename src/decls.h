@@ -1,6 +1,8 @@
 #ifndef KERN2_DECL_H
 #define KERN2_DECL_H
 
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 struct multiboot_info;
@@ -46,5 +48,11 @@ __attribute__((regparm(3))) void vga_write2(const char *s,
 void vga_write(const char *s, int8_t linea, uint8_t color);
 
 __attribute__((regparm(2))) void vga_write_cyan(const char *s, int8_t linea);
+
+
+// Escribe en ‘s’ el valor de ‘val’ en base 10 si su anchura
+// es menor que ‘bufsize’. En ese caso devuelve true, caso de
+// no haber espacio suficiente no hace nada y devuelve false.
+bool fmt_int(uint64_t val, char *s, size_t bufsize);
 
 #endif

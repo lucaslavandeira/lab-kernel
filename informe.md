@@ -40,3 +40,19 @@ Con `.p2align`
 kstack:
     .space 8192
 ```
+
+
+### kern2-cmdline
+
+>Mostrar cómo implementar la misma concatenación, de manera correcta, usando strncat(3).
+
+Se implementaría la función de la misma manera (???)
+
+>Explicar cómo se comporta strlcat(3) si, erróneamente, se declarase buf con tamaño 12. ¿Introduce algún error el código?
+
+Termina ocurriendo que se concatena la línea de comandos al buffer hasta llegar a los 12 caracteres. No ocurre comportamiento no deseado como sería un buffer overflow.
+
+>Compilar el siguiente programa, y explicar por qué se imprimen dos líneas distintas, en lugar de la misma dos veces:
+
+La función `static void printf_sizeof_buf(char buf[256])` acepta un parámetro de tipo `char[]`, que deceptivamente en C el compilador trata como si fuera equivalente a declararlo como `char*`. `sizeof` de un argumento de tipo `char[]` es el tamaño del array, pero `sizeof` de un argumento de tipo `char*` es el tamaño del puntero, es decir 4 bytes en arquitecturas de 32 bits, u 8 en 64 bits. En el `printf` de la llamada a la función, se imprimen solamente esa cantidad de bytes, debido a `sizeof` devolviendo el tamaño del puntero en vez del del arreglo.
+

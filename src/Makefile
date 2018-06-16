@@ -3,7 +3,7 @@ CFLAGS += -g -std=c99 -Wall -Wextra -Wpedantic
 
 QEMU := qemu-system-i386 -serial mon:stdio
 KERN := kern0
-BOOT := -kernel $(KERN)
+BOOT := -kernel $(KERN) $(QEMU_EXTRA)
 ASMS := $(wildcard *.S)  # wildcard *.S
 SRCS := $(wildcard *.c)  # wildcard *.c
 OBJS := $(ASMS:%.S=%.o) $(SRCS:%.c=%.o) 

@@ -26,10 +26,6 @@ ack_irq:
         iret
 
 
-.data
-breakpoint_msg:
-        .asciz "Hello, breakpoint"
-
 .globl timer_asm
 timer_asm:
         // (1) Guardar registros.
@@ -44,3 +40,29 @@ timer_asm:
         pop %edx
         pop %eax
         jmp ack_irq
+
+
+.globl divzero
+divzero:
+        // (1) Guardar registros.
+        push %eax
+        push %edx
+        push %ecx
+
+        movl $divzero_msg, %eax
+        movl $17, %ecx
+        call vga_write_cyan
+
+        // (4) Restaurar registros.
+        pop %ecx
+        pop %edx
+        pop %eax
+        jmp ack_irq
+
+.data
+breakpoint_msg:
+        .asciz "Hello, breakpoint"
+
+
+divzero_msg:
+        .asciz "Se divide por ++ebx"

@@ -187,3 +187,17 @@ $2 = 0x6
 
 `reti` es la instrucción "RETurn from Interrupt", y hace exactamente lo que podemos ver, levantar la instrucción de retorno del tope del stack, y también los valores de los registros $eflags, y $cs. `ret` es el return normal, y solo levanta la instrucción de retorno.
 
+### kern2-div
+
+>Explicar el funcionamiento exacto de la línea asm(...) del punto anterior:
+
+>¿qué cómputo se está realizando?
+
+La instrucción `div` agarra el número representado por los 64 bits entre `eax` y `edx` en ese orden, siendo los 32 bits más significicativos de `eax` y los 32 menos de `edx`, y los usa como dividendo en una operación de división entera, siendo el divisor el registro argumento de entrada. El cociente de la división es escrita a `eax`, y el resto a `edx`. En esta instrucción se divide por `%4`, que contando los argumentos en orden, corresponde al registro `b` (`ebx`).
+
+>¿de dónde sale el valor de la variable color?
+Las variables son dadas un valor de la salida del `asm`. El componente `: "=a"(linea), "=c"(color)` se interpreta como: guardar el valor final de los registros `a` (`eax`) en la variable `linea` de C, y el de `c` (`ecx`) en `color`.
+
+>¿por qué se da valor 0 a %edx?
+Para inicializarlo a un valor conocido, puesto que es un registro no utiliazado por la función actual, puede llegar a contener algún valor basura que nos altere la instrucción que queremos ejecutar.
+

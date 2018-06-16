@@ -56,3 +56,29 @@ Termina ocurriendo que se concatena la línea de comandos al buffer hasta llegar
 
 La función `static void printf_sizeof_buf(char buf[256])` acepta un parámetro de tipo `char[]`, que deceptivamente en C el compilador trata como si fuera equivalente a declararlo como `char*`. `sizeof` de un argumento de tipo `char[]` es el tamaño del array, pero `sizeof` de un argumento de tipo `char*` es el tamaño del puntero, es decir 4 bytes en arquitecturas de 32 bits, u 8 en 64 bits. En el `printf` de la llamada a la función, se imprimen solamente esa cantidad de bytes, debido a `sizeof` devolviendo el tamaño del puntero en vez del del arreglo.
 
+
+
+## Interrupciones: reloj y teclado
+
+### kern2-idt
+
+>¿Cuántos bytes ocupa una entrada en la IDT?
+
+Según la especificación de la arquitectura x86 referenciada, cada entrada de es de 8 bytes.
+
+>¿Cuántas entradas como máximo puede albergar la IDT?
+
+La IDT es un array de, a lo sumo, 256 entradas. Las primeras 32 están reservadas por la arquitectura, de la 32 en adelante son usables para interrupciones por software (las que nos interesan).
+
+>¿Cuál es el valor máximo aceptable para el campo limit del registro IDTR?
+
+`limit` del registro IDTR tiene un tamaño de 16 bytes, y actúa como un offset a una dirección base de la IDT, de manera similar a las páginas de memoria (frame + offset). Para una IDT de N entradas, el campo limit puede valer a lo sumo 8N - 1, para acceder al último byte de la última entrada.
+
+>Indicar qué valor exacto tomará el campo limit para una IDT de 64 descriptores solamente.
+
+N = 64, 8N = 512 bytes, a lo sumo el campo limit tendrá el valor 8N - 1, 511
+
+>Consultar la sección 6.1 y explicar la diferencia entre interrupciones (§6.3) y excepciones (§6.4).
+
+Las interrupciones son eventos programados a través de la IDT, son señales que el hardware es programado para enviar al programa en ejecución actual y frenarlo para manejarlas. Pueden y son manejadas por software. Las excepciones son similares pero tienen como única fuente a las condiciones de error que pueden lanzar las instrucciones, como por ejemplo una división por cero. No pueden ser lanzadas manualmente por software, aunque sí se puede decidir qué hacer frente a ellas (handler).
+

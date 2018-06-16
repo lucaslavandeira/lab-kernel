@@ -1,8 +1,7 @@
 #include "decls.h"
 #include "multiboot.h"
 #include "string.h"
-
-unsigned char __attribute__ ((aligned (4096))) kstack[8192];
+#include "interrupts.h"
 
 
 void kmain(const multiboot_info_t *mbi) {
@@ -25,5 +24,10 @@ void kmain(const multiboot_info_t *mbi) {
     }
 
     vga_write(mem, 10, 0x07);
+
+    // Código ejercicio kern2-idt.
+    idt_init();   // (a)
+    asm("int3");  // (b)
+
     asm("hlt");
 }

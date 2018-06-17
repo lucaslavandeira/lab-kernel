@@ -5,8 +5,10 @@ QEMU := qemu-system-i386 -serial mon:stdio
 KERN := kern0
 BOOT := -kernel $(KERN) $(QEMU_EXTRA)
 ASMS := $(wildcard *.S)  # wildcard *.S
-SRCS := $(wildcard *.c)  # wildcard *.c
+SRCS := $(wildcard *.c) $(wildcard lib/*.c)  # wildcard *.c
 OBJS := $(ASMS:%.S=%.o) $(SRCS:%.c=%.o) 
+
+OBJS := $(patsubst lib/%.o,%.o,$(OBJS))
 
 GCC_PATH := /usr/lib/gcc/x86_64-linux-gnu/6
 CFLAGS += -I$(GCC_PATH)/include -I$(GCC_PATH)/include-fixed

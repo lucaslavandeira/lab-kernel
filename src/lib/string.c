@@ -29,7 +29,7 @@
  *   - delete #include <debug.h>, #define ASSERT as ((void) 0)
  */
 
-#include "string.h"
+#include <string.h>
 #define ASSERT(x) ((void) 0)
 
 /* Copies SIZE bytes from SRC to DST, which must not overlap.

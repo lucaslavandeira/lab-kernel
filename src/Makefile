@@ -14,6 +14,7 @@ OBJS := $(patsubst $(LIBS_DIR)/%.o,%.o,$(OBJS))  # Le saco el "lib/" a los objet
 
 GCC_PATH := /usr/lib/gcc/x86_64-linux-gnu/6
 CFLAGS += -I$(GCC_PATH)/include -I$(GCC_PATH)/include-fixed
+CFLAGS += -I$(LIBS_DIR)/
 
 LIBGCC := $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 

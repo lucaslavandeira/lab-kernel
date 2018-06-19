@@ -24,3 +24,6 @@ restando 4 bytes cada vez.
  50         movl %ebp, %esp 
 ```
 `%ebp` es suficiente ya que....... [completar]
+
+# Ej: kern2-exec
+

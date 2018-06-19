@@ -1,6 +1,8 @@
 CC = gcc
 CFLAGS := -ffreestanding -m32 -O1 -fasm
 CFLAGS += -g -std=c99 -Wall -Wextra -Wpedantic
+CFLAGS += -fasm -fno-omit-frame-pointer	# agregado segun indicacion en 
+										# ejercicio kern2-exec
 
 QEMU := qemu-system-i386 -serial mon:stdio
 KERN := kern2

@@ -80,11 +80,11 @@ N = 64, 8N = 512 bytes, a lo sumo el campo limit tendrá el valor 8N - 1, 511
 
 >Consultar la sección 6.1 y explicar la diferencia entre interrupciones (§6.3) y excepciones (§6.4).
 
-Las interrupciones son eventos programados a través de la IDT, son señales que el hardware es programado para enviar al programa en ejecución actual y frenarlo para manejarlas. Pueden y son manejadas por software. Las excepciones son similares pero tienen como única fuente a las condiciones de error que pueden lanzar las instrucciones, como por ejemplo una división por cero. No pueden ser lanzadas manualmente por software, aunque sí se puede decidir qué hacer frente a ellas (handler).
+Las interrupciones son eventos programados a través de la IDT, son señales que el hardware es programado para enviar al programa en ejecución actual y frenarlo para manejarlas. Pueden ser y son manejadas por software. Las excepciones son similares pero tienen como única fuente a las condiciones de error que pueden lanzar las instrucciones, como por ejemplo una división por cero. No pueden ser lanzadas manualmente por software, aunque sí se puede decidir qué hacer frente a ellas (asignarles un handler).
 
 ### kern2-isr
 
-Versión A:
+Versión A (usando `iret`):
 
 Antes de la interrupción:
 
@@ -99,6 +99,7 @@ Disassembly:
    0x001006e8 <+215>:	hlt    
    ...
 ```
+Estamos parados en `kmain` justo antes de lanzar la interrupción.
 
 Valores de registros:
 ```
@@ -125,7 +126,7 @@ breakpoint () at idt_entry.S:4
 $5 = (void *) 0x104d8c
 ```
 
-El stack avanzó 0x104d98 - 0x104d8c = 12 bytes, o 3 posiciones de 4 bytes (1 word).
+El stack avanzó 0x104d98 - 0x104d8c = 12 bytes, o 3 posiciones de 4 bytes (1 word). Vemos como se pasó a ejecutar el handler asignado a la interrupción `3` de manera "atómica", sin instrucción intermedia. Vemos los contenidos del stack.
 
 ```
 (gdb) x/3wx $sp
@@ -134,7 +135,7 @@ El stack avanzó 0x104d98 - 0x104d8c = 12 bytes, o 3 posiciones de 4 bytes (1 wo
 Según la especificación de la arquitectura: 
 "b. The processor then saves the current state of the EFLAGS, CS, and EIP registers on the new stack"
 
-En efecto, podemos ver los valores 0x16 (flags), 0x8 (CS), y 0x001006e8 (la próxima instrucción a ejecutar luego del `int`).
+En efecto, podemos ver los valores 0x16 (flags), 0x8 (CS), y 0x001006e8 (la próxima instrucción a ejecutar luego del `int`) fueron pusheados al lanzarse la interrupción.
 
 Paso siguiente ejecutamos el `test` de la función `breakpoint`:
 ```

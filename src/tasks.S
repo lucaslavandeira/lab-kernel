@@ -18,10 +18,10 @@ movl %ebp, %esp
     push %ebp
     movl %esp, %ebp
 
-    // ...
-    movl 12(%esp), %eax
-    movl 8(%esp), %ebx
-    movl 4(%esp), %ecx
+    push %ecx
+    push %edx
+    push %eax
+
     call vga_write
 
     leave

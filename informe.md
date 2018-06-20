@@ -84,8 +84,9 @@ Las interrupciones son eventos programados a través de la IDT, son señales que
 
 ### kern2-isr
 
-Valores del stack con el handler usando `iret`:
-Antes de la interrupción: 
+Versión A:
+
+Antes de la interrupción:
 
 Disassembly:
 ```
@@ -166,7 +167,7 @@ $19 = (void *) 0x104d98
 
 Podemos comprobar que se volvió al estado anterior de la interrupción, levantando del stack los valores guardados de los flags.
 
-Ahora si usamos `ret` en vez de `reti` se puede ver que estos valores puestos en el stack por la interrupción no son levantados a la vuelta de la ejecución de `breakpoint`, es decir los flags no fueron reiniciados a sus valores anteriores, y de hecho siguen en el stack:
+Ahora si usamos `ret` en vez de `iret` se puede ver que estos valores (`$eflags` + `$cs`) puestos en el stack por la interrupción no son levantados a la vuelta de la ejecución de `breakpoint`, es decir los flags no fueron reiniciados a sus valores anteriores, y de hecho siguen en el stack:
 
 ```
 breakpoint () at idt_entry.S:4
@@ -185,7 +186,7 @@ $2 = 0x6
 0x104d90:	0x00000008	0x00000016	0x00104ee8
 ```
 
-`reti` es la instrucción "RETurn from Interrupt", y hace exactamente lo que podemos ver, levantar la instrucción de retorno del tope del stack, y también los valores de los registros $eflags, y $cs. `ret` es el return normal, y solo levanta la instrucción de retorno.
+`iret` es la instrucción "RETurn from Interrupt", y hace exactamente lo que podemos ver, levantar la instrucción de retorno del tope del stack, y también los valores de los registros $eflags, y $cs. `ret` es el return normal, y solo levanta la instrucción de retorno.
 
 ### kern2-div
 

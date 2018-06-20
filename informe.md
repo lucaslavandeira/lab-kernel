@@ -189,6 +189,24 @@ $2 = 0x6
 
 `iret` es la instrucción "RETurn from Interrupt", y hace exactamente lo que podemos ver, levantar la instrucción de retorno del tope del stack, y también los valores de los registros $eflags, y $cs. `ret` es el return normal, y solo levanta la instrucción de retorno.
 
+#### Versión final de breakpoint()
+
+>Para cada una de las siguientes maneras de guardar/restaurar registros en breakpoint, indicar si es correcto (en el sentido de hacer su ejecución “invisible”), y justificar por qué:
+
+Según la convención de llamadas de x86, los registros _caller saved_ son EAX, ECX y EDX. Estos tres son los registros que la función `breakpoint` deberá guardar para cumplir con la convención, siendo la función el _caller_ de `vga_write2`. La respuesta A funciona, al guardar todos los registros en el stack con pusha y restorándolos con popa, pero es menos eficiente que guardar simplemente los tres registros indicados anteriormente (las interrupciones deberían ser manejadas de la manera más rápida posible). La B hace exactamente lo pedido. La C no es invisible al guardar los registros equivocados.
+
+>Responder de nuevo la pregunta anterior, sustituyendo en el código vga_write2 por vga_write. (Nota: el código representado con ... correspondería a la nueva convención de llamadas.)
+
+No cambia la premisa de, al llamar a una función, cumplir con la convención de llamadas y guardar los registros que le corresponden al _caller_. Entonces la respuesta es la misma: A y B funcionan, C no.
+
+>Si la ejecución del manejador debe ser enteramente invisible ¿no sería necesario guardar y restaurar el registro EFLAGS a mano? ¿Por qué?
+
+El registro EFLAGS ya es guardado y restorado entre interrupciones mediante las instrucciones `int` e `iret`, como se vio en el ejercicio anterior.
+
+>¿En qué stack se ejecuta la función vga_write()?
+
+Según la especificación de x86 dada por Intel, si la interrupción no implica un cambio del nivel de privilegio (nuestro caso, no tenemos niveles de privilegio en el kernel), la función llamada se ejecutará en el mismo stack que fue levantada la interrupción.
+
 ### kern2-div
 
 >Explicar el funcionamiento exacto de la línea asm(...) del punto anterior:

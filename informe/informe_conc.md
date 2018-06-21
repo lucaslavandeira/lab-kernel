@@ -25,7 +25,6 @@ restando 4 bytes cada vez.
 ```
 `%ebp` es suficiente ya que....... [completar]
 
-# Ej: kern2-exec
 # Ej: kern2-exit
 > En la función contador_run() del ejercicio anterior, se configuran ambos contadores con el mismo número de iteraciones. Reducir ahora el número de iteraciones del segundo contador, y describir qué tipo de error ocurre.
 qemu se rompe con el siguiente mensaje: *qemu: fatal: Trying to execute code outside RAM or ROM at 0x21fc0039*. 

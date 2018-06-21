@@ -28,14 +28,14 @@ vga_write2:
     ret
 
 .globl task_swap
-// Pone en ejecución la tarea cuyo stack está en ‘*esp’, cuyo
+// Pone en ejecución la tarea cuyo stack está en `*esp`, cuyo
 // valor se intercambia por el valor actual de %esp. Guarda y
 // restaura todos los callee-saved registers.
 //void task_swap(uintptr_t *esp);
 
 /* Implementar en tasks.S la función task_swap(). Como se indicó arriba, 
 esta función recibe como parámetro la ubicación en memoria de la variable 
-esp que apunta al stack de la tarea en “stand-by”. La responsabilidad de 
+esp que apunta al stack de la tarea en "stand-by". La responsabilidad de 
 esta función es:
 
 	guardar, en el stack de la tarea actual, los registros que son callee-saved

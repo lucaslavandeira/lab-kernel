@@ -11,6 +11,13 @@ static uintptr_t esp;
 static uint8_t stack1[USTACK_SIZE] __attribute__((aligned(4096)));
 static uint8_t stack2[USTACK_SIZE] __attribute__((aligned(4096)));
 
+static void exit() {
+    uintptr_t tmp = esp;
+    esp = 0;
+    if (tmp)
+        task_swap(&tmp);
+}
+
 static void yield() {
     if (esp)
         task_swap(&esp);
@@ -43,7 +50,8 @@ static void contador_yield(unsigned lim, uint8_t linea, char color) {
         }
 
         yield();
-    }
+    } 
+//    exit();
 }
 
 void contador_run() { 
@@ -57,8 +65,8 @@ void contador_run() {
 
     *(--b) = 0x4F;
     *(--b) = 1;
-    *(--b) = 100;
-    *(--b) = 0;
+    *(--b) = 10;
+    *(--b) = (uintptr_t) exit;
     *(--b) = (uintptr_t) contador_yield;
     *(--b) = 0;
     *(--b) = 0;

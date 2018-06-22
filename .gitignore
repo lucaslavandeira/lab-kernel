@@ -1,3 +1,6 @@
 .vscode
 src/kern*
 *.o
+*.aux
+*.log
+*.toc

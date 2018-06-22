@@ -2,7 +2,7 @@
 #include "decls.h"
 
 /**
- * Handler para el timer (IRQ0). Escribe un carÃ¡cter cada segundo.
+ * Handler para el timer (IRQ0). Escribe un caracter cada segundo.
  */
 static const uint8_t hz_ratio = 18;  // Default IRQ0 freq (18.222 Hz).
 

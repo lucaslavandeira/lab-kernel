@@ -2,6 +2,7 @@
 #include "multiboot.h"
 #include "string.h"
 #include "interrupts.h"
+#include "sched.h"
 
 #define USTACK_SIZE 4096
 
@@ -93,6 +94,13 @@ void kmain(const multiboot_info_t *mbi) {
     vga_write("antes del 2", 18, 0xE0);
     vga_write2("Funciona vga_write2?", 18, 0xE0);
 
+    /* From Ej: kern2-task:
+     * Por último, como “bootstrap” del planificador, se necesita una 
+     * llamada a la función sched_init() desde kmain(), antes de las llamadas 
+     * a idt_init()/irq_init(). Esto se necesita para que haya una 
+     * tarea inicial en ejecución.
+     * */
+    sched_init();
     // Código ejercicio kern2-idt.
     idt_init();   // (a)
     irq_init();

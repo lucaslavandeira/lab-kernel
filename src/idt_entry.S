@@ -9,6 +9,15 @@ breakpoint:
         push %edx
         push %ecx
 
+
+        // (2) Preparar argumentos de la llamada.
+        mov $breakpoint_msg, %eax
+        mov $14, %edx
+        mov $0xE0, %ecx
+
+        // (3) Invocar a vga_write2()
+        call vga_write2
+
         // (4) Restaurar registros.
         pop %ecx
         pop %edx

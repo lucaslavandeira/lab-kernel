@@ -5,8 +5,6 @@
 
 #define USTACK_SIZE 4096
 
-unsigned char __attribute__ ((aligned (4096))) kstack[8192];
-
 static uint8_t stack1[USTACK_SIZE] __attribute__((aligned(4096)));
 static uint8_t stack2[USTACK_SIZE] __attribute__((aligned(4096)));
 

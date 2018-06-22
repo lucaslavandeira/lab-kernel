@@ -1,6 +1,7 @@
 #include "decls.h"
 #include "multiboot.h"
 #include "string.h"
+#include "interrupts.h"
 
 #define USTACK_SIZE 4096
 
@@ -56,6 +57,9 @@ void two_stacks_c() {
 }
 
 void kmain(const multiboot_info_t *mbi) {
+    int8_t linea;
+    uint8_t color;
+    
     vga_write("kern2 loading.............", 8, 0x70);
 
     if (mbi->flags & MULTIBOOT_INFO_CMDLINE) {
@@ -90,6 +94,17 @@ void kmain(const multiboot_info_t *mbi) {
 
     vga_write("antes del 2", 18, 0xE0);
     vga_write2("Funciona vga_write2?", 18, 0xE0);
+
+    // Código ejercicio kern2-idt.
+    idt_init();   // (a)
+    irq_init();
+    asm("int3");  // (b)
+
+    asm("div %4"
+    : "=a"(linea), "=c"(color)
+    : "0"(18), "1"(0xE0), "b"(1), "d"(0));
+
+    vga_write("Funciona vga_write2?", linea, color);
 
     asm("hlt");
 }

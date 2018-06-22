@@ -53,4 +53,13 @@ enum Interrupt {
     T_KEYBOARD = 33,  // IRQ1
 };
 
+// interrupts.c
+void idt_init(void);
+void idt_install(uint8_t n, void (*handler)(void));
+
+// idt_entry.S
+void breakpoint(void);
+
+void irq_init();
+
 #endif

@@ -37,18 +37,22 @@ ack_irq:
 
 .globl timer_asm
 timer_asm:
-        // (1) Guardar registros.
-        push %eax
-        push %edx
-        push %ecx
+    // Guardar registros e invocar handler
+    pusha
+    call timer
 
-        call timer
+    // Ack *antes* de llamar a sched()
+    movl $ACK_IRQ, %eax
+    outb %al, $PIC1
 
-        // (4) Restaurar registros.
-        pop %ecx
-        pop %edx
-        pop %eax
-        jmp ack_irq
+    // Llamada a sched con argumento
+    push %esp
+    call sched
+
+    // Retornar (si se volvió de sched)
+    addl $4, %esp
+    popa
+    iret
 
 
 .globl divzero

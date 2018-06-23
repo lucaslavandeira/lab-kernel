@@ -112,6 +112,7 @@ void kmain(const multiboot_info_t *mbi) {
 
     vga_write("Funciona vga_write2?", linea, color);
 
+    contador_spawn();
     asm("hlt");
 }
 

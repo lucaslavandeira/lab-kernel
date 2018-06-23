@@ -38,7 +38,8 @@ void spawn(void (*entry)(void)) {
 
             Tasks[i].frame->eflags = 0x0200;  // flag IF = 1
 
-            Tasks[i].frame->cs = 8;  // Multiboot siempre pone '8' como CS (ver interrupts.c)
+            Tasks[i].frame->cs = 8;     // Multiboot siempre pone '8' 
+                                        // como CS (ver interrupts.c)
             Tasks[i].frame->eip = entry;
             return;
         }
